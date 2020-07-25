@@ -73,27 +73,27 @@ while not game_end:
      # clear screen
     display.fill((0, 0, 0))
 
-    # # move snake tails
-    # ltx = snake_pos["x"]
-    # lty = snake_pos["y"]
-    #
-    # for i, j in enumerate(snake_tails):
-    #     _ltx = snake_tails[i][0]
-    #     _lty = snake_tails[i][1]
-    #
-    #     snake_tails[i][0] = ltx
-    #     snake_tails[i][1] = lty
-    #
-    #     ltx = _ltx
-    #     lty = _lty
-    #
-    # # draw snake tails
-    # for t in snake_tails:
-    #     pygame.draw.rect(display, colors["snake_tail"], [
-    #         t[0],
-    #         t[1],
-    #         snake_size[0],
-    #         snake_size[1]])
+    # move snake tails
+    ltx = snake_pos["x"]
+    lty = snake_pos["y"]
+
+    for i, j in enumerate(snake_tails):
+        _ltx = snake_tails[i][0]
+        _lty = snake_tails[i][1]
+
+        snake_tails[i][0] = ltx
+        snake_tails[i][1] = lty
+
+        ltx = _ltx
+        lty = _lty
+
+    # draw snake tails
+    for t in snake_tails:
+        pygame.draw.rect(display, colors["snake_tail"], [
+            t[0],
+            t[1],
+            snake_size[0],
+            snake_size[1]])
 
     # draw snake
     snake_pos["x"] += snake_pos["x_change"]
