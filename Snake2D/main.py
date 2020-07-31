@@ -1,3 +1,4 @@
+import random
 import pygame
 
 # initialize pygame
@@ -10,7 +11,7 @@ display = pygame.display.set_mode((width, height))
 
 # run update
 pygame.display.update()
-pygame.display.set_caption("Snake 2D")
+pygame.display.set_caption("Snake 2D       Level: 1       Score: 0")
 
 # define colors
 colors = {
@@ -31,20 +32,35 @@ snake_pos = {
 snake_size = (10, 10)
 
 # current snake movement speed
-snake_speed = 0.3
+snake_speed = 5
 
 # snake tails
 snake_tails = []
 
-# snake_pos["x_change"] = -snake_speed
-for i in range(50):
+snake_pos["y_change"] = snake_speed
+for i in range(10):
     snake_tails.append([snake_pos["x"] + 10 * i, snake_pos["y"]])
+
+# food
+food_pos = {
+    "x": round(random.randrange(0, width - snake_size[0]) / 10) * 10,
+    "y": round(random.randrange(0, height - snake_size[1]) / 10) * 10,
+}
+
+food_size = (15, 15)
+food_eaten = 0
+
+# game characteristics
+score = 0
+level = 1
 
 # start loop
 game_end = False
+clock = pygame.time.Clock()
 
 while not game_end:
     # game loop
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_end = True
@@ -70,7 +86,7 @@ while not game_end:
                 snake_pos["x_change"] = 0
                 snake_pos["y_change"] = snake_speed
 
-     # clear screen
+    # clear screen
     display.fill((0, 0, 0))
 
     # move snake tails
@@ -100,16 +116,16 @@ while not game_end:
     snake_pos["y"] += snake_pos["y_change"]
 
     # teleport snake, if required
-    if (snake_pos["x"] < -snake_size[0]):
+    if snake_pos["x"] < 0:
         snake_pos["x"] = width
 
-    elif (snake_pos["x"] > width):
+    elif snake_pos["x"] > width:
         snake_pos["x"] = 0
 
-    elif (snake_pos["y"] < -snake_size[1]):
+    elif snake_pos["y"] < 0:
         snake_pos["y"] = height
 
-    elif (snake_pos["y"] > height):
+    elif snake_pos["y"] > height:
         snake_pos["y"] = 0
 
     pygame.draw.rect(display, colors["snake_head"], [
@@ -118,8 +134,33 @@ while not game_end:
         snake_size[0],
         snake_size[1]])
 
-    pygame.display.update()
+    # draw food
+    pygame.draw.rect(display, colors["apple"], [
+        food_pos["x"],
+        food_pos["y"],
+        food_size[0],
+        food_size[1]])
 
+    # detect collision with food
+    if snake_pos["x"] == food_pos["x"] and snake_pos["y"] == food_pos["y"]:
+        food_eaten += 1
+        score += 100
+        snake_tails.append([food_pos["x"], food_pos["y"]])
+
+        if food_eaten == 10:
+            level += 1
+            food_eaten = 0
+
+        food_pos = {
+            "x": round(random.randrange(0, width - snake_size[0]) / 10) * 10,
+            "y": round(random.randrange(0, height - snake_size[1]) / 10) * 10,
+        }
+
+    pygame.display.update()
+    pygame.display.set_caption("Snake 2D       Level: " + str(level) + "       Score: " + str(score))
+
+    # set FPS
+    clock.tick(30)
 
 # close app, if required
 pygame.quit()
